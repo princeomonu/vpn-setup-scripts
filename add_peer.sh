@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ "$#" -ne 5 ]; then
-  echo "Usage: $0 <private_key_file> <public_key> <peer_ip> <subnet_mask> <peer_endpoint>"
+if [ "$#" -lt 4 ] || [ "$#" -gt 5 ]; then
+  echo "Usage: $0 <private_key_file> <public_key> <peer_ip> <subnet_mask> [peer_endpoint]"
   exit 1
 fi
 
@@ -38,16 +38,26 @@ cat <<EOF >> /etc/wireguard/wg0.conf
 [Peer]
 PublicKey = $public_key
 AllowedIPs = $peer_ip/$subnet_mask
-Endpoint = $peer_endpoint
-PersistentKeepalive = 15
 EOF
+
+if [ -n "$peer_endpoint" ]; then
+  echo "Endpoint = $peer_endpoint" >> /etc/wireguard/wg0.conf
+  echo "PersistentKeepalive = 15" >> /etc/wireguard/wg0.conf
+fi
 
 # Apply WireGuard configuration
 echo "Applying WireGuard configuration..."
-sudo wg set wg0 peer $public_key allowed-ips $peer_ip/$subnet_mask endpoint $peer_endpoint persistent-keepalive 15
+if [ -n "$peer_endpoint" ]; then
+  sudo wg set wg0 peer $public_key allowed-ips $peer_ip/$subnet_mask endpoint $peer_endpoint persistent-keepalive 15
+else
+  sudo wg set wg0 peer $public_key allowed-ips $peer_ip/$subnet_mask
+fi
 
 # Output relevant details
 echo "Peer configuration added successfully."
 echo "Public Key: $public_key"
 echo "Allowed IPs: $peer_ip/$subnet_mask"
-echo "Endpoint: $peer_endpoint"
+
+if [ -n "$peer_endpoint" ]; then
+  echo "Endpoint: $peer_endpoint"
+fi
