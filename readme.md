@@ -12,7 +12,7 @@
 ## add peer
 ```
     bash add_peer.sh <private_key_file> <public_key> <peer_ip> <subnet_mask> <peer_endpoint>
-    bash add_peer.sh privatekey.txt XhiUFbQPukDw6^C4r4NSvi5UyOFGHFXrBH9o7LGJ+QI= 10.10.11.2 24
+    bash add_peer.sh privatekey.txt AesseMaBkqd/CDyKoCqB550QhKRM9h93I4bmK23ZumY= 10.10.11.1 24 3.86.190.63:51820
 ```
 
 ## remove peer
